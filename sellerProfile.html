@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Seller Profile - Delight.pk</title>
+  <style>
+    /* Reset and body */
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body { 
+      font-family: 'Segoe UI', sans-serif; 
+      background: #f4f4f9; 
+      display:flex; 
+      flex-direction:column; 
+      align-items:center; 
+      justify-content:flex-start; 
+      min-height:100vh; 
+      padding: 50px 15px;
+    }
+
+    /* Container */
+    .container { 
+      background:white; 
+      padding: 30px 25px; 
+      border-radius:12px; 
+      box-shadow:0 4px 12px rgba(0,0,0,0.1); 
+      max-width: 450px; 
+      width: 100%; 
+      text-align:center; 
+      margin-bottom:20px; 
+    }
+
+    h2 { 
+      color:#ef6c00; 
+      margin-bottom:25px; 
+      font-size: 24px;
+    }
+
+    /* Profile Picture */
+    .profile-pic { 
+      width: 120px; 
+      height: 120px; 
+      border-radius: 50%; 
+      overflow: hidden; 
+      margin: 0 auto 20px auto; 
+      box-shadow:0 4px 8px rgba(0,0,0,0.5);
+    }
+    .profile-pic img { width:100%; height:100%; object-fit:cover; }
+
+    /* Labels and Inputs */
+    label { 
+      font-weight:bold; 
+      display:block; 
+      margin-top:15px; 
+      margin-bottom:5px; 
+      text-align:left;
+    }
+    input[type="text"], 
+    input[type="number"] { 
+      width:100%; 
+      padding:12px 15px; 
+      border-radius:8px; 
+      border:1px solid #ccc; 
+      font-size:16px;
+      margin-bottom:10px;
+    }
+
+    /* Buttons */
+    button { 
+      width: 100%; 
+      background:#ef6c00; 
+      color:white; 
+      border:none; 
+      padding:12px 0; 
+      border-radius:10px; 
+      cursor:pointer; 
+      font-size:16px; 
+      transition:0.3s; 
+      margin-top:15px;
+    }
+    button:hover { background:#d85c00; }
+
+    #uploadBtn { background:#25d366; margin-top:20px; }
+    #uploadBtn:hover { background:#1ebe5d; }
+
+    #welcomeText { 
+      margin-top:200px; 
+      color:#ef6c00; 
+      font-size:18px; 
+      font-weight:bold;
+    }
+
+    @media(max-width:480px){
+      .container { padding: 25px 15px; }
+      h2 { font-size: 22px; }
+      input[type="text"], input[type="number"] { font-size:15px; padding:10px; }
+      button { font-size:15px; padding:10px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Seller Profile</h2>
+
+  <div class="profile-pic">
+    <img id="profile-img" src="">
+  </div>
+
+  <label for="supplierInput">Supplier Name:</label>
+  <input type="text" id="supplierInput" readonly>
+
+  <label for="discountInput">Discount Rs.</label>
+  <input type="number" id="discountInput" placeholder="100">
+
+  <label for="profitInput">Profit Rs.</label>
+  <input type="number" id="profitInput" placeholder="50">
+
+  <button onclick="sendProfile()">OK</button>
+
+  <button id="uploadBtn" onclick="goToSellerPanel()">Upload Product</button>
+
+  <h2 id="welcomeText"></h2>
+  <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+  const supplierInput = document.getElementById("supplierInput");
+  const profileImg = document.getElementById("profile-img");
+
+  window.onload = function(){
+    const savedName = localStorage.getItem("supplierName");
+    const savedPic = localStorage.getItem("supplierPic");
+
+    if(savedName){
+      supplierInput.value = savedName;
+      document.getElementById("welcomeText").innerText = "Hello, " + savedName + " 👋";
+      if(savedPic) profileImg.src = savedPic;
+    } else {
+      window.location.href = "login.html";
+    }
+  }
+
+  // FormSubmit using fetch for proper redirect
+  function sendProfile(){
+    const supplier = supplierInput.value.trim();
+    const discount = document.getElementById("discountInput").value.trim();
+    const profit = document.getElementById("profitInput").value.trim();
+
+    if(!discount || !profit){
+      alert("⚠️ Please fill both discount and profit.");
+      return;
+    }
+
+    const message = `Supplier: ${supplier}\nDiscount: ${discount} Rs\nProfit: ${profit} Rs`;
+
+    // Prepare FormData
+    const formData = new FormData();
+    formData.append('message', message);
+    formData.append('_captcha', 'false');
+    formData.append('_next', 'thanks.html');
+
+    // Send via fetch
+    fetch('https://formsubmit.co/araindaniyalo2@gmail.com', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => {
+      // Redirect manually
+      window.location.href = 'thanks.html';
+    })
+    .catch(error => {
+      alert("⚠️ Something went wrong. Please try again.");
+      console.error(error);
+    });
+  }
+
+  function goToSellerPanel(){
+    window.location.href = "Delight Seller Panel.html";
+  }
+
+  function logout(){
+    localStorage.removeItem("supplierName");
+    localStorage.removeItem("supplierPic");
+    window.location.href = "login.html";
+  }
+</script>
+
+</body>
+</html>

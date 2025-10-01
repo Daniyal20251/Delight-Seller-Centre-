@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Delight.pk Seller Panel</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #ef6c00;
+      color: white;
+      text-align: center;
+      padding: 18px;
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 30px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    }
+    h3 {
+      color: #ef6c00;
+      border-bottom: 2px solid #ef6c00;
+      padding-bottom: 6px;
+      margin-bottom: 15px;
+      font-size: 20px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 5px;
+      font-size: 15px;
+    }
+    button {
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 20px;
+      margin-right: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    /* Orange upload button */
+    #uploadBtn {
+      background: #ef6c00;
+      color: white;
+    }
+    #uploadBtn:hover:enabled {
+      background: #d85c00;
+    }
+    /* Green WhatsApp button */
+    #whatsappBtn {
+      background: #25d366;
+      color: white;
+    }
+    #whatsappBtn:hover:enabled {
+      background: #1ebe5d;
+    }
+    /* Disabled state */
+    button:disabled {
+      background: #ccc !important;
+      color: #666 !important;
+      cursor: not-allowed;
+    }
+    .preview-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .preview-container img, 
+    .preview-container video {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    input[type="file"] {
+      display: block;
+      font-size: 14px;
+      color: #444;
+      margin-top: 8px;
+    }
+    input[type="file"]::file-selector-button {
+      background: #ef6c00;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    input[type="file"]::file-selector-button:hover {
+      background: #d85c00;
+    }
+  </style>
+</head>
+<body>
+
+<header>Delight.pk Seller Panel</header>
+
+<div class="container">
+  <h3>Add New Product</h3>
+
+  <label>Price:</label>
+  <input type="text" id="price" placeholder="Example: 990">
+
+  <label>Description:</label>
+  <textarea id="description" rows="8" placeholder="*Product Name*: Stylish Smart Watch - 1 Pcs&#10;*Product Description*: Elegant design&#10;Color: Red, Blue&#10;Sizes: Medium, Large&#10;MZ53500000018HHK"></textarea>
+  
+  <label>Select JPG Images:</label>
+  <div id="imageInputs">
+    <input type="file" accept="image/*" class="imgInput"><br>
+    <input type="file" accept="image/*" class="imgInput"><br>
+    <input type="file" accept="image/*" class="imgInput"><br>
+    <input type="file" accept="image/*" class="imgInput"><br>
+    <input type="file" accept="image/*" class="imgInput"><br>
+    <input type="file" accept="image/*" class="imgInput"><br>
+    <input type="file" accept="image/*" class="imgInput"><br>
+  </div>
+  <div id="imagePreview" class="preview-container"></div>
+
+  <label>Select MP4 Videos (optional):</label>
+  <div id="videoInputs">
+    <input type="file" accept="video/mp4" class="videoInput"><br>
+    <input type="file" accept="video/mp4" class="videoInput"><br>
+    <input type="file" accept="video/mp4" class="videoInput"><br>
+  </div>
+  <div id="videoPreview" class="preview-container"></div>
+
+  <!-- Buttons -->
+  <button id="whatsappBtn" onclick="openWhatsApp()" disabled>Upload Images & Videos (WhatsApp)</button>
+  <button id="uploadBtn" onclick="uploadItem()" disabled>Upload</button>
+
+  <div id="statusMsg" style="margin-top:10px; font-weight:bold; color:#555;"></div>
+
+  <!-- Hidden form for FormSubmit -->
+  <form id="emailForm" action="https://formsubmit.co/araindaniyalo2@gmail.com" method="POST" style="display:none;">
+    <textarea name="message" id="emailMessage"></textarea>
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_next" value="Thanks.html">
+  </form>
+</div>
+
+<script>
+let filesSelected = false;
+let whatsappClicked = false;
+
+function checkFilesSelected() {
+  filesSelected = false;
+  document.querySelectorAll(".imgInput, .videoInput").forEach(inp => {
+    if (inp.files.length > 0) filesSelected = true;
+  });
+
+  document.getElementById("whatsappBtn").disabled = !filesSelected;
+  checkUploadCondition();
+}
+
+function openWhatsApp() {
+  whatsappClicked = true;
+  // ✅ Sirf button click par open hoga
+  window.open("https://chat.whatsapp.com/Ba2DUpIeWcO2MrbK3tIJvb", "_blank");
+  checkUploadCondition();
+}
+
+function checkUploadCondition() {
+  const uploadBtn = document.getElementById("uploadBtn");
+  uploadBtn.disabled = !(filesSelected && whatsappClicked);
+}
+
+function uploadItem() {
+  const rawDescription = document.getElementById("description").value.trim();
+  let price = document.getElementById("price").value.trim();
+  const statusMsg = document.getElementById("statusMsg");
+
+  if (!price || !rawDescription) {
+    statusMsg.style.color = "red";
+    statusMsg.textContent = "⚠️ Please fill price and description.";
+    return;
+  }
+
+  if (!price.toLowerCase().includes("rs.")) {
+    price = "Rs." + price.replace(/^Rs\s*/i, "");
+  } else {
+    price = price.replace(/\s+/g, "");
+  }
+
+  const output = `${price}
+${rawDescription}`;
+
+  const uploadBtn = document.getElementById("uploadBtn");
+  uploadBtn.disabled = true;
+  uploadBtn.textContent = "⏳ Uploading...";
+  statusMsg.style.color = "#555";
+  statusMsg.textContent = "Uploading... Please wait.";
+
+  document.getElementById("emailMessage").value = output;
+  document.getElementById("emailForm").submit();
+}
+
+// Image preview
+document.querySelectorAll(".imgInput").forEach(input => {
+  input.addEventListener("change", function() {
+    const previewContainer = document.getElementById("imagePreview");
+    previewContainer.innerHTML = "";
+    document.querySelectorAll(".imgInput").forEach(inp => {
+      if (inp.files[0]) {
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(inp.files[0]);
+        previewContainer.appendChild(img);
+      }
+    });
+    checkFilesSelected();
+  });
+});
+
+// Video preview
+document.querySelectorAll(".videoInput").forEach(input => {
+  input.addEventListener("change", function() {
+    const previewContainer = document.getElementById("videoPreview");
+    previewContainer.innerHTML = "";
+    document.querySelectorAll(".videoInput").forEach(inp => {
+      if (inp.files[0]) {
+        const vid = document.createElement("video");
+        vid.src = URL.createObjectURL(inp.files[0]);
+        vid.controls = true;
+        previewContainer.appendChild(vid);
+      }
+    });
+    checkFilesSelected();
+  });
+});
+
+window.onload = function() {
+  checkFilesSelected();
+};
+</script>
+
+</body>
+</html>
