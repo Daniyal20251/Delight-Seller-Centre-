@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Seller Profile - Delight.pk</title>
   <style>
-    /* Reset and body */
     * { box-sizing: border-box; margin:0; padding:0; }
     body { 
       font-family: 'Segoe UI', sans-serif; 
@@ -13,16 +14,15 @@
       align-items:center; 
       justify-content:flex-start; 
       min-height:100vh; 
-      padding: 50px 15px;
+      padding: 30px 15px;
     }
 
-    /* Container */
     .container { 
       background:white; 
-      padding: 30px 25px; 
+      padding: 25px 20px; 
       border-radius:12px; 
       box-shadow:0 4px 12px rgba(0,0,0,0.1); 
-      max-width: 450px; 
+      max-width: 420px; 
       width: 100%; 
       text-align:center; 
       margin-bottom:20px; 
@@ -30,40 +30,39 @@
 
     h2 { 
       color:#ef6c00; 
-      margin-bottom:25px; 
-      font-size: 24px;
+      margin-bottom:20px; 
+      font-size: 22px;
     }
 
-    /* Profile Picture */
     .profile-pic { 
-      width: 120px; 
-      height: 120px; 
+      width: 100px; 
+      height: 100px; 
       border-radius: 50%; 
       overflow: hidden; 
       margin: 0 auto 20px auto; 
-      box-shadow:0 4px 8px rgba(0,0,0,0.5);
+      box-shadow:0 4px 8px rgba(0,0,0,0.3);
     }
     .profile-pic img { width:100%; height:100%; object-fit:cover; }
 
-    /* Labels and Inputs */
     label { 
       font-weight:bold; 
       display:block; 
-      margin-top:15px; 
-      margin-bottom:5px; 
-      text-align:left;
+      margin-top:12px; 
+      margin-bottom:4px; 
+      text-align:left; 
+      font-size:14px;
     }
+
     input[type="text"], 
     input[type="number"] { 
       width:100%; 
-      padding:12px 15px; 
+      padding:10px 12px; 
       border-radius:8px; 
       border:1px solid #ccc; 
-      font-size:16px;
-      margin-bottom:10px;
+      font-size:15px;
+      margin-bottom:8px;
     }
 
-    /* Buttons */
     button { 
       width: 100%; 
       background:#ef6c00; 
@@ -74,25 +73,26 @@
       cursor:pointer; 
       font-size:16px; 
       transition:0.3s; 
-      margin-top:15px;
+      margin-top:12px;
     }
     button:hover { background:#d85c00; }
 
-    #uploadBtn { background:#25d366; margin-top:20px; }
+    #uploadBtn { background:#25d366; }
     #uploadBtn:hover { background:#1ebe5d; }
 
     #welcomeText { 
-      margin-top:200px; 
+      margin-top:250px; 
       color:#ef6c00; 
       font-size:18px; 
       font-weight:bold;
     }
 
     @media(max-width:480px){
-      .container { padding: 25px 15px; }
-      h2 { font-size: 22px; }
-      input[type="text"], input[type="number"] { font-size:15px; padding:10px; }
-      button { font-size:15px; padding:10px 0; }
+      .container { padding: 20px 15px; }
+      h2 { font-size: 20px; }
+      input[type="text"], input[type="number"] { font-size:14px; padding:9px; }
+      button { font-size:14px; padding:10px 0; }
+      #welcomeText { font-size:16px; }
     }
   </style>
 </head>
@@ -114,8 +114,7 @@
   <label for="profitInput">Profit Rs.</label>
   <input type="number" id="profitInput" placeholder="50">
 
-  <button onclick="sendProfile()">OK</button>
-
+  <button onclick="sendProfile()">Save & Continue</button>
   <button id="uploadBtn" onclick="goToSellerPanel()">Upload Product</button>
 
   <h2 id="welcomeText"></h2>
@@ -139,7 +138,6 @@
     }
   }
 
-  // FormSubmit using fetch for proper redirect
   function sendProfile(){
     const supplier = supplierInput.value.trim();
     const discount = document.getElementById("discountInput").value.trim();
@@ -152,21 +150,16 @@
 
     const message = `Supplier: ${supplier}\nDiscount: ${discount} Rs\nProfit: ${profit} Rs`;
 
-    // Prepare FormData
     const formData = new FormData();
     formData.append('message', message);
     formData.append('_captcha', 'false');
-    formData.append('_next', 'thanks.html');
+    formData.append('_next', 'Thanks.html'); // ✅ capital T
 
-    // Send via fetch
     fetch('https://formsubmit.co/araindaniyalo2@gmail.com', {
       method: 'POST',
       body: formData
     })
-    .then(response => {
-      // Redirect manually
-      window.location.href = 'thanks.html';
-    })
+    .then(() => window.location.href = 'Thanks.html') // ✅ capital T
     .catch(error => {
       alert("⚠️ Something went wrong. Please try again.");
       console.error(error);

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Delight.pk Seller Panel</title>
   <style>
     body {
@@ -13,30 +15,31 @@
       background: #ef6c00;
       color: white;
       text-align: center;
-      padding: 18px;
-      font-size: 22px;
+      padding: 16px;
+      font-size: 20px;
       font-weight: bold;
       letter-spacing: 1px;
     }
     .container {
       max-width: 700px;
-      margin: 30px auto;
+      margin: 20px auto;
       background: white;
-      padding: 25px;
+      padding: 20px;
       border-radius: 12px;
       box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
     }
     h3 {
       color: #ef6c00;
       border-bottom: 2px solid #ef6c00;
-      padding-bottom: 6px;
+      padding-bottom: 5px;
       margin-bottom: 15px;
-      font-size: 20px;
+      font-size: 18px;
     }
     label {
       font-weight: bold;
       display: block;
-      margin-top: 15px;
+      margin-top: 12px;
+      font-size: 14px;
     }
     input[type="text"], textarea {
       width: 100%;
@@ -44,18 +47,21 @@
       border: 1px solid #ccc;
       border-radius: 8px;
       margin-top: 5px;
-      font-size: 15px;
+      font-size: 14px;
     }
+    textarea { resize: vertical; }
+
     button {
       border: none;
-      padding: 12px 20px;
+      padding: 12px 18px;
       border-radius: 10px;
       cursor: pointer;
-      margin-top: 20px;
+      margin-top: 18px;
       margin-right: 10px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       transition: 0.3s;
+      width: 100%;
     }
     /* Orange upload button */
     #uploadBtn {
@@ -87,8 +93,8 @@
     }
     .preview-container img, 
     .preview-container video {
-      width: 100px;
-      height: 100px;
+      width: 90px;
+      height: 90px;
       object-fit: cover;
       border-radius: 8px;
       border: 1px solid #ccc;
@@ -103,15 +109,33 @@
       background: #ef6c00;
       color: white;
       border: none;
-      padding: 10px 16px;
+      padding: 8px 14px;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       transition: 0.3s;
     }
     input[type="file"]::file-selector-button:hover {
       background: #d85c00;
+    }
+
+    #statusMsg {
+      margin-top: 10px; 
+      font-weight: bold; 
+      color: #555; 
+      text-align: center;
+    }
+
+    @media(max-width:480px){
+      header { font-size: 18px; padding: 14px; }
+      .container { margin: 15px; padding: 15px; }
+      h3 { font-size: 16px; }
+      label { font-size: 13px; }
+      input[type="text"], textarea { font-size: 13px; }
+      button { font-size: 13px; padding: 10px; margin-top: 12px; }
+      .preview-container img, 
+      .preview-container video { width: 80px; height: 80px; }
     }
   </style>
 </head>
@@ -126,12 +150,10 @@
   <input type="text" id="price" placeholder="Example: 990">
 
   <label>Description:</label>
-  <textarea id="description" rows="8" placeholder="*Product Name*: Stylish Smart Watch - 1 Pcs&#10;*Product Description*: Elegant design&#10;Color: Red, Blue&#10;Sizes: Medium, Large&#10;MZ53500000018HHK"></textarea>
+  <textarea id="description" rows="6" placeholder="*Product Name*: Stylish Smart Watch - 1 Pcs&#10;*Product Description*: Elegant design&#10;Color: Red, Blue&#10;Sizes: Medium, Large&#10;MZ53500000018HHK"></textarea>
   
   <label>Select JPG Images:</label>
   <div id="imageInputs">
-    <input type="file" accept="image/*" class="imgInput"><br>
-    <input type="file" accept="image/*" class="imgInput"><br>
     <input type="file" accept="image/*" class="imgInput"><br>
     <input type="file" accept="image/*" class="imgInput"><br>
     <input type="file" accept="image/*" class="imgInput"><br>
@@ -144,7 +166,6 @@
   <div id="videoInputs">
     <input type="file" accept="video/mp4" class="videoInput"><br>
     <input type="file" accept="video/mp4" class="videoInput"><br>
-    <input type="file" accept="video/mp4" class="videoInput"><br>
   </div>
   <div id="videoPreview" class="preview-container"></div>
 
@@ -152,13 +173,13 @@
   <button id="whatsappBtn" onclick="openWhatsApp()" disabled>Upload Images & Videos (WhatsApp)</button>
   <button id="uploadBtn" onclick="uploadItem()" disabled>Upload</button>
 
-  <div id="statusMsg" style="margin-top:10px; font-weight:bold; color:#555;"></div>
+  <div id="statusMsg"></div>
 
   <!-- Hidden form for FormSubmit -->
   <form id="emailForm" action="https://formsubmit.co/araindaniyalo2@gmail.com" method="POST" style="display:none;">
     <textarea name="message" id="emailMessage"></textarea>
     <input type="hidden" name="_captcha" value="false">
-    <input type="hidden" name="_next" value="Thanks.html">
+    <input type="hidden" name="_next" value="Thanks.html"> <!-- ✅ Capital T -->
   </form>
 </div>
 
@@ -171,14 +192,12 @@ function checkFilesSelected() {
   document.querySelectorAll(".imgInput, .videoInput").forEach(inp => {
     if (inp.files.length > 0) filesSelected = true;
   });
-
   document.getElementById("whatsappBtn").disabled = !filesSelected;
   checkUploadCondition();
 }
 
 function openWhatsApp() {
   whatsappClicked = true;
-  // ✅ Sirf button click par open hoga
   window.open("https://chat.whatsapp.com/Ba2DUpIeWcO2MrbK3tIJvb", "_blank");
   checkUploadCondition();
 }
@@ -215,7 +234,7 @@ ${rawDescription}`;
   statusMsg.textContent = "Uploading... Please wait.";
 
   document.getElementById("emailMessage").value = output;
-  document.getElementById("emailForm").submit();
+  document.getElementById("emailForm").submit(); // ✅ redirect to Thanks.html
 }
 
 // Image preview
