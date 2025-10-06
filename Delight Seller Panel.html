@@ -179,7 +179,7 @@
   <form id="emailForm" action="https://formsubmit.co/araindaniyalo2@gmail.com" method="POST" style="display:none;">
     <textarea name="message" id="emailMessage"></textarea>
     <input type="hidden" name="_captcha" value="false">
-    <input type="hidden" name="_next" value="Thanks.html"> <!-- ✅ Capital T -->
+    <input type="hidden" name="_next" value="Thanks.html">
   </form>
 </div>
 
@@ -198,7 +198,8 @@ function checkFilesSelected() {
 
 function openWhatsApp() {
   whatsappClicked = true;
-  window.open("https://chat.whatsapp.com/Ba2DUpIeWcO2MrbK3tIJvb", "_blank");
+  // ✅ Direct WhatsApp chat with greeting message
+  window.open("https://wa.me/923133196595?text=Salam!%20Main%20Delight.pk%20par%20product%20upload%20karna%20chahta%20hoon.", "_blank");
   checkUploadCondition();
 }
 
@@ -234,7 +235,7 @@ ${rawDescription}`;
   statusMsg.textContent = "Uploading... Please wait.";
 
   document.getElementById("emailMessage").value = output;
-  document.getElementById("emailForm").submit(); // ✅ redirect to Thanks.html
+  document.getElementById("emailForm").submit();
 }
 
 // Image preview

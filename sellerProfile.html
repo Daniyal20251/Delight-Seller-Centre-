@@ -14,7 +14,7 @@
       align-items:center; 
       justify-content:flex-start; 
       min-height:100vh; 
-      padding: 30px 15px;
+      padding: 30px 15px 70px; /* bottom space for nav bar */
     }
 
     .container { 
@@ -81,10 +81,37 @@
     #uploadBtn:hover { background:#1ebe5d; }
 
     #welcomeText { 
-      margin-top:250px; 
+      margin-top: 140px; 
       color:#ef6c00; 
       font-size:18px; 
       font-weight:bold;
+    }
+
+    /* ✅ Bottom Navigation Bar */
+    .bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #ef6c00;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 15px 0;
+      z-index: 9999;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.2);
+    }
+    .bar a {
+      text-decoration: none;
+      color: white;
+      text-align: center;
+      font-size: 15px;
+      font-weight: bold;
+    }
+    .bar i {
+      display: block;
+      font-size: 20px;
+      margin-bottom: 3px;
     }
 
     @media(max-width:480px){
@@ -95,6 +122,7 @@
       #welcomeText { font-size:16px; }
     }
   </style>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -109,16 +137,29 @@
   <input type="text" id="supplierInput" readonly>
 
   <label for="discountInput">Discount Rs.</label>
-  <input type="number" id="discountInput" placeholder="100">
+  <input type="number" id="discountInput" placeholder="50">
 
   <label for="profitInput">Profit Rs.</label>
-  <input type="number" id="profitInput" placeholder="50">
+  <input type="number" id="profitInput" placeholder="100">
+  
+  <label for="deliveryInput">Delivery Charges Rs.</label>
+  <input type="number" id="deliveryInput" placeholder="200">
 
   <button onclick="sendProfile()">Save & Continue</button>
   <button id="uploadBtn" onclick="goToSellerPanel()">Upload Product</button>
 
   <h2 id="welcomeText"></h2>
   <button onclick="logout()">Logout</button>
+</div>
+
+<!-- ✅ Bottom Navigation -->
+<div class="bar">
+  <a href="sellerProfile.html">
+    <i class="fas fa-user"></i> Profile
+  </a>
+  <a href="#" onclick="goToOrders()">
+    <i class="fas fa-box"></i> My Orders
+  </a>
 </div>
 
 <script>
@@ -142,24 +183,25 @@
     const supplier = supplierInput.value.trim();
     const discount = document.getElementById("discountInput").value.trim();
     const profit = document.getElementById("profitInput").value.trim();
+    const delivery = document.getElementById("deliveryInput").value.trim();
 
-    if(!discount || !profit){
-      alert("⚠️ Please fill both discount and profit.");
+    if(!discount || !profit || !delivery){
+      alert("⚠️ Please fill all fields (Discount, Profit, Delivery Charges).");
       return;
     }
 
-    const message = `Supplier: ${supplier}\nDiscount: ${discount} Rs\nProfit: ${profit} Rs`;
+    const message = `Supplier: ${supplier}\nDiscount: ${discount} Rs\nProfit: ${profit} Rs\nDelivery Charges: ${delivery} Rs`;
 
     const formData = new FormData();
     formData.append('message', message);
     formData.append('_captcha', 'false');
-    formData.append('_next', 'Thanks.html'); // ✅ capital T
+    formData.append('_next', 'Thanks.html');
 
     fetch('https://formsubmit.co/araindaniyalo2@gmail.com', {
       method: 'POST',
       body: formData
     })
-    .then(() => window.location.href = 'Thanks.html') // ✅ capital T
+    .then(() => window.location.href = 'Thanks.html')
     .catch(error => {
       alert("⚠️ Something went wrong. Please try again.");
       console.error(error);
@@ -168,6 +210,16 @@
 
   function goToSellerPanel(){
     window.location.href = "Delight Seller Panel.html";
+  }
+
+  function goToOrders(){
+    const supplierName = supplierInput.value.trim();
+    if(!supplierName){
+      alert("⚠️ Supplier name missing!");
+      return;
+    }
+    const fileName = supplierName.replace(/\s+/g, '').toLowerCase() + ".html";
+    window.location.href = fileName;
   }
 
   function logout(){
