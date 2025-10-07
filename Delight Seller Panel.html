@@ -57,13 +57,11 @@
       border-radius: 10px;
       cursor: pointer;
       margin-top: 18px;
-      margin-right: 10px;
       font-size: 14px;
       font-weight: 600;
       transition: 0.3s;
       width: 100%;
     }
-    /* Orange upload button */
     #uploadBtn {
       background: #ef6c00;
       color: white;
@@ -71,7 +69,6 @@
     #uploadBtn:hover:enabled {
       background: #d85c00;
     }
-    /* Green WhatsApp button */
     #whatsappBtn {
       background: #25d366;
       color: white;
@@ -79,7 +76,6 @@
     #whatsappBtn:hover:enabled {
       background: #1ebe5d;
     }
-    /* Disabled state */
     button:disabled {
       background: #ccc !important;
       color: #666 !important;
@@ -159,6 +155,11 @@
     <input type="file" accept="image/*" class="imgInput"><br>
     <input type="file" accept="image/*" class="imgInput"><br>
     <input type="file" accept="image/*" class="imgInput"><br>
+     <input type="file" accept="image/*" class="imgInput"><br>
+    <input type="file" accept="image/*" class="imgInput"><br>
+    <input type="file" accept="image/*" class="imgInput"><br>
+    <input type="file" accept="image/*" class="imgInput"><br>
+    <input type="file" accept="image/*" class="imgInput"><br>
   </div>
   <div id="imagePreview" class="preview-container"></div>
 
@@ -176,7 +177,7 @@
   <div id="statusMsg"></div>
 
   <!-- Hidden form for FormSubmit -->
-  <form id="emailForm" action="https://formsubmit.co/araindaniyalo2@gmail.com" method="POST" style="display:none;">
+  <form id="emailForm" action="https://formsubmit.co/araindaniyalo2@gmail.com" method="POST" style="display:none;" target="_self">
     <textarea name="message" id="emailMessage"></textarea>
     <input type="hidden" name="_captcha" value="false">
     <input type="hidden" name="_next" value="Thanks.html">
@@ -188,24 +189,20 @@ let filesSelected = false;
 let whatsappClicked = false;
 
 function checkFilesSelected() {
-  filesSelected = false;
-  document.querySelectorAll(".imgInput, .videoInput").forEach(inp => {
-    if (inp.files.length > 0) filesSelected = true;
-  });
+  filesSelected = Array.from(document.querySelectorAll(".imgInput, .videoInput"))
+    .some(inp => inp.files.length > 0);
   document.getElementById("whatsappBtn").disabled = !filesSelected;
   checkUploadCondition();
 }
 
 function openWhatsApp() {
   whatsappClicked = true;
-  // ✅ Direct WhatsApp chat with greeting message
   window.open("https://wa.me/923133196595?text=Salam!%20Main%20Delight.pk%20par%20product%20upload%20karna%20chahta%20hoon.", "_blank");
   checkUploadCondition();
 }
 
 function checkUploadCondition() {
-  const uploadBtn = document.getElementById("uploadBtn");
-  uploadBtn.disabled = !(filesSelected && whatsappClicked);
+  document.getElementById("uploadBtn").disabled = !(filesSelected && whatsappClicked);
 }
 
 function uploadItem() {
@@ -219,15 +216,13 @@ function uploadItem() {
     return;
   }
 
-  if (!price.toLowerCase().includes("rs.")) {
+  if (!/^Rs/i.test(price)) {
     price = "Rs." + price.replace(/^Rs\s*/i, "");
   } else {
     price = price.replace(/\s+/g, "");
   }
 
-  const output = `${price}
-${rawDescription}`;
-
+  const output = `${price}\n${rawDescription}`;
   const uploadBtn = document.getElementById("uploadBtn");
   uploadBtn.disabled = true;
   uploadBtn.textContent = "⏳ Uploading...";
@@ -235,7 +230,15 @@ ${rawDescription}`;
   statusMsg.textContent = "Uploading... Please wait.";
 
   document.getElementById("emailMessage").value = output;
-  document.getElementById("emailForm").submit();
+
+  // ✅ Submit form and open Thanks.html manually
+  const form = document.getElementById("emailForm");
+  form.submit();
+
+  // ✅ Redirect to Thanks.html after small delay
+  setTimeout(() => {
+    window.location.href = "Thanks.html";
+  }, 1000);
 }
 
 // Image preview
@@ -271,9 +274,7 @@ document.querySelectorAll(".videoInput").forEach(input => {
   });
 });
 
-window.onload = function() {
-  checkFilesSelected();
-};
+window.onload = checkFilesSelected;
 </script>
 
 </body>
