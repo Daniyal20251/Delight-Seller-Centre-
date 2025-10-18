@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Delight.pk Seller Panel</title>
   <style>
     body {
@@ -42,7 +44,6 @@
       cursor: pointer;
       font-size: 14px;
       margin-top: 10px;
-      margin-bottom: 6px;
       margin-right: 10px;
     }
 
@@ -65,9 +66,11 @@
       cursor: pointer;
       margin-top: 20px;
       margin-right: 10px;
+      font-weight: bold;
     }
 
-    .preview-container img {
+    .preview-container img,
+    .preview-container video {
       width: 80px;
       height: 80px;
       object-fit: cover;
@@ -117,17 +120,22 @@
   <div id="imageInputs"></div>
   <div class="preview-container" id="imagePreview"></div>
 
+  <label>Select Videos (optional):</label>
+  <div id="videoInputs"></div>
+  <div id="videoPreviewContainer" class="preview-container"></div>
+
   <button type="submit">Upload Product</button>
 </form>
 
 <div id="successBox" class="success">✅ Product uploaded successfully!</div>
 
 <script>
+// ================= IMAGE SECTION =================
 const imagePreviewBox = document.getElementById("imagePreview");
 const imageInputsDiv = document.getElementById("imageInputs");
 
-// Create 6 image inputs
-for (let i = 0; i < 6; i++) {
+// Create 12 image inputs
+for (let i = 0; i < 12; i++) {
   const label = document.createElement("label");
   label.className = "fileUpload";
   label.innerHTML = `Upload Image ${i + 1}
@@ -135,19 +143,52 @@ for (let i = 0; i < 6; i++) {
   imageInputsDiv.appendChild(label);
 }
 
-// Image Preview
-document.addEventListener("change", function(e) {
+// Image preview
+document.addEventListener("change", function (e) {
   if (e.target.classList.contains("imgInput")) {
     const img = e.target.files[0];
     if (img) {
       const imgEl = document.createElement("img");
       imgEl.src = URL.createObjectURL(img);
+      imgEl.style.width = "80px";
+      imgEl.style.borderRadius = "10px";
+      imgEl.style.margin = "5px";
       imagePreviewBox.appendChild(imgEl);
     }
   }
 });
 
-document.getElementById("productForm").addEventListener("submit", async function(e) {
+// ================= VIDEO SECTION =================
+const videoInputsDiv = document.getElementById("videoInputs");
+const videoPreviewContainer = document.getElementById("videoPreviewContainer");
+
+// Create 3 video inputs
+for (let i = 0; i < 3; i++) {
+  const label = document.createElement("label");
+  label.className = "fileUpload";
+  label.innerHTML = `Upload Video ${i + 1}
+    <input type="file" accept="video/*" class="vidInput">`;
+  videoInputsDiv.appendChild(label);
+}
+
+// Video preview
+document.addEventListener("change", function (e) {
+  if (e.target.classList.contains("vidInput")) {
+    const videoFile = e.target.files[0];
+    if (videoFile) {
+      const videoEl = document.createElement("video");
+      videoEl.src = URL.createObjectURL(videoFile);
+      videoEl.width = 150;
+      videoEl.controls = true;
+      videoEl.style.margin = "5px";
+      videoEl.style.borderRadius = "10px";
+      videoPreviewContainer.appendChild(videoEl);
+    }
+  }
+});
+
+// ================= FORM SUBMIT =================
+document.getElementById("productForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
   const title = document.getElementById("title").value.trim();
@@ -155,45 +196,52 @@ document.getElementById("productForm").addEventListener("submit", async function
   const color = document.getElementById("color").value.trim();
   const size = document.getElementById("size").value.trim();
   const description = document.getElementById("description").value.trim();
-  const imgInputs = document.querySelectorAll(".imgInput");
-  const images = [];
 
-  imgInputs.forEach(input => {
-    if (input.files[0]) {
-      images.push(input.files[0].name);
-    }
-  });
-
-  if (!title || !price || images.length === 0) {
-    alert("⚠️ Please fill title, price and at least one image!");
+  if (!title || !price) {
+    alert("⚠️ Please fill title and price!");
     return;
   }
 
-  const productData = {
-    title,
-    price: price.startsWith("Rs.") ? price : `Rs.${price}`,
-    image: images[0],
-    images,
-    colors: color ? color.split(",").map(c => c.trim()) : [],
-    sizes: size ? size.split(",").map(s => s.trim()) : [],
-    description
-  };
+  const formData = new FormData();
+  formData.append("title", title);
+  formData.append("price", price.startsWith("Rs.") ? price : `Rs.${price}`);
+  formData.append("color", color);
+  formData.append("size", size);
+  formData.append("description", description);
+
+  // Add images
+  const imgInputs = document.querySelectorAll(".imgInput");
+  imgInputs.forEach(input => {
+    if (input.files[0]) {
+      formData.append("images", input.files[0]);
+    }
+  });
+
+  // Add videos
+  const vidInputs = document.querySelectorAll(".vidInput");
+  vidInputs.forEach(input => {
+    if (input.files[0]) {
+      formData.append("videos", input.files[0]);
+    }
+  });
 
   try {
-    const res = await fetch("http://localhost:3000/upload-product", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(productData)
-    });
+  const res = await fetch("https://admit-infinite-continuous-training.trycloudflare.com/upload-product", {
+    method: "POST",
+    body: formData
+  });
 
-    if (res.ok) {
+    const data = await res.json();
+    if (data.success) {
       document.getElementById("successBox").style.display = "block";
       document.getElementById("productForm").reset();
       imagePreviewBox.innerHTML = "";
+      videoPreviewContainer.innerHTML = "";
     } else {
-      alert("❌ Failed to upload product. Try again.");
+      alert("❌ Upload failed, please try again.");
     }
   } catch (err) {
+    console.error(err);
     alert("⚠️ Error connecting to backend.");
   }
 });
