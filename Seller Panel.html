@@ -205,8 +205,8 @@ document.getElementById("productForm").addEventListener("submit", async function
   const formData = new FormData();
   formData.append("title", title);
   formData.append("price", price.startsWith("Rs.") ? price : `Rs.${price}`);
-  formData.append("color", color);
-  formData.append("size", size);
+  formData.append("colors", color);
+  formData.append("sizes", size);
   formData.append("description", description);
 
   // Add images
@@ -226,10 +226,11 @@ document.getElementById("productForm").addEventListener("submit", async function
   });
 
   try {
-  const res = await fetch("https://delight-backend-awfqip7t7-daniyal20251s-projects.vercel.app/", {
-    method: "POST",
-    body: formData
-  });
+    // ✅ FIXED: correct route is /upload (not /uploads)
+    const res = await fetch("https://acc-between-selecting-transport.trycloudflare.com/upload", {
+  method: "POST",
+  body: formData,
+});
 
     const data = await res.json();
     if (data.success) {
